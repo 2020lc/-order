@@ -1,6 +1,6 @@
 <template>
     <el-container class="register">
-        <el-page-header @back="goBack" content="首页"></el-page-header>
+        <goBack></goBack>
        <el-form ref="registerForm" :model="form" :rules='rules' label-width="35%" >
            <el-form-item label="用户名" prop="user">
                <el-input v-model="form.user" type="text" placeholder="请输入用户名"></el-input>
@@ -22,8 +22,14 @@
     </el-container>
 </template>
 <script>
+
+import goBack from "@/views/components/Goback";
 import  { ADD_USER } from '@/store/mutations-types.js'
+
 export default {
+    components:{
+        goBack,
+    },
     data(){
         //验证电话号码
         let checkTelePhone = (rule,value,callback)=> {
@@ -106,8 +112,10 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    background-image: linear-gradient(45deg,#E6A23C,#409EFF);
+    background: url(https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwww.51tfb.com%2Fuploadfile%2F20190318%2F201903180925125c8ef3786fa70.jpg&refer=http%3A%2F%2Fwww.51tfb.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1622986099&t=d67915831bc01fb31e9823f7f8ae1f9b) no-repeat;
+    background-size: cover;
 }
+
 
 /* register */
 .el-form{

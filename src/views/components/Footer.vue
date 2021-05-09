@@ -9,7 +9,7 @@
         <span class="total">￥{{ total }}</span>
       </el-col>
       <el-col :span="16">
-        <el-button v-if="!isOrder" type="info" class="btn" round>￥10元起送</el-button>
+        <el-button v-if="!isOrder" type="info" class="btn" round disabled >￥10元起送</el-button>
         <el-button
           v-else
           type="primary"
@@ -28,7 +28,7 @@ export default {
   data() {
     return {
       isOrder: false,
-      orderList:''
+      orderList:{}
     };
   },
   props: {
@@ -39,15 +39,36 @@ export default {
     },
     foodList: {
       type: Array,
-      default: {},
+      default: [],
     },
+    status:{
+      type:Object,
+      default:{},
+    }
   },
   methods: {
     submit() {
-      this.orderList = this.foodList.fliter((item)=>{
+      // 抛数据
+      this.orderList = this.foodList.filter((item)=>{
         return item.total > 0;
       });
-      
+      console.log(this.orderList);
+
+      // 检测登录授权状态
+      if(!this.status.isLogin){
+        this.$alert('请登录','检测到你未登录',{
+          confirmButtonText:'确定',
+          center:true,
+          callback:action=>{
+            this.$message({
+              type:'info',
+              message:`action:${action}`
+            })
+          }
+        })
+        return ;
+      }
+      this.$router.push({name:'pay',params:{data:this.orderList,total:this.total}});
     },
   },
   watch:{

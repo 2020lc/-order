@@ -1,6 +1,6 @@
 <template>
     <el-container class="register">
-        <el-page-header @back="goBack" content="首页"></el-page-header>
+        <goBack></goBack>
        <el-form ref="registerForm" :model="form" :rules='rules' label-width="35%" >
            <el-form-item label="用户名" prop="user">
                <el-input v-model="form.user" type="text" placeholder="请输入用户名"></el-input>
@@ -16,9 +16,14 @@
     </el-container>
 </template>
 <script>
-import { change_LOGIN_STATUS } from '@/store/mutations-types.js'
+
+import { CHANGE_LOGIN_STATUS } from '@/store/mutations-types.js'
+import goBack from "@/views/components/Goback";
 
 export default {
+    components:{
+        goBack
+    },
     data(){
         //验证密码
         let checkPwd = (rule,value,callback)=>{
@@ -36,7 +41,6 @@ export default {
             }
         }
         return {
-            pageId:'',
             form:{
                 user:'',
                 pwd:'',
@@ -57,7 +61,7 @@ export default {
             this.$refs[formName].validate((valid)=>{
                 if(valid){
                     let obj = {user:this.form.user,isLogin:true};
-                    this.$store.commit(change_LOGIN_STATUS,obj);
+                    this.$store.commit(CHANGE_LOGIN_STATUS,obj);
                     this.$router.push({name:'home'});
                 }else{
                     return false;
@@ -70,9 +74,6 @@ export default {
         goBack(){
             this.$router.push({name:'home'});
         }
-    },
-    created(){
-        this.pageId = this.$route.params.id;
     }
 }
 </script>
@@ -84,7 +85,8 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    background-image: linear-gradient(45deg,#E6A23C,#409EFF);
+    background: url('../../../assets/images/login-bk.jpg') no-repeat;
+    background-size: cover;
 }
 
 /* register */

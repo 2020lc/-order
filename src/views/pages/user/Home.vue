@@ -1,17 +1,21 @@
 <template>
   <el-container class="home">
+
     <el-header>
+      
       <el-row v-if="status.isLogin" class="user-info">
         <span class="el-icon-user-solid"></span>
-        <span>{{ status.user }}:{{ nowTime }}好</span>
+        <span>{{ status.user }}：{{ nowTime }}</span>
         <router-link class="my" to="./account">
           <span class="el-icon-setting">我的信息</span>
         </router-link>
       </el-row>
+
       <el-row v-else class="user-info">
-        <router-link class="router" to="./login">登录</router-link>
-        <router-link class="router" to="./register">注册</router-link>
+        <router-link class="router" to="./login" >登录</router-link>
+        <router-link class="router" to="./register" >注册</router-link>
       </el-row>
+
       <el-row class="hot-show">
         <el-carousel :interval="3000">
           <el-carousel-item v-for="item in getHotFood" :key="item.key">
@@ -24,20 +28,25 @@
         </el-carousel>
       </el-row>
     </el-header>
+
+
     <el-container class="main">
+
       <el-aside ref="leftInfo">
         <el-row
           v-for="(item, index) in leftInfo"
           :key="index"
           @click.native="goTarget(index)"
-          >{{ item }}</el-row
+          ><a :href="item.prop">{{ item.title }}</a></el-row
         >
       </el-aside>
+
       <el-main ref="rightInfo">
         <el-row
           v-for="(item, index) in foodList"
           :key="item.key"
           class="list-box"
+          :id="[item.target]"
         >
           <el-col :span="10">
             <el-image
@@ -81,6 +90,7 @@
               >
             </el-row>
           </el-col>
+          
           <div class="add-btn-box">
             <span
               @click="addfood(index, item.total, item.discount)"
@@ -100,14 +110,17 @@
         </el-row>
       </el-main>
     </el-container>
+
     <el-footer>
-      <Footer :total="total" :food-list="foodList"></Footer>
+      <Footer :status='status' :total="total" :food-list="foodList"></Footer>
     </el-footer>
   </el-container>
 </template>
 
 <script>
+
 import Footer from "@/views/components/Footer.vue";
+import $ from "jquery";
 
 export default {
   components: {
@@ -122,69 +135,75 @@ export default {
       nowTime: "",
       //总价格
       total: 0,
-      leftInfo: ["智能推荐", "限时福利", "地道湘味", "超值套餐", "田园时蔬"],
+      leftInfo: [
+        { title: "智能推荐", prop: "#recommand" },
+        { title: "限时福利", prop: "#welfare" },
+        { title: "地道湘味", prop: "#hunan" },
+        { title: "超值套餐", prop: "#super" },
+        { title: "田园时蔬", prop: "#vegtable" },
+      ],
       leftPre: 0,
       //食物信息列表
       foodList: [
         {
           key: 1,
           title: "辣椒炒肉+米饭",
-          fit: "contain", //背景图片如何适应容器框
-          url:
-            "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3168074913,2072870605&fm=26&gp=0.jpg",
+          fit: "cover", //背景图片如何适应容器框
+          url:require('@/assets/images/meat2.jpg'),
           ishot: true,
           isdiscount: false,
           discount: 1,
           price: 12.88,
           total: 0,
+          target: "recommand",
         },
         {
           key: 2,
           title: "脆笋炒腊肉+米饭",
           fit: "cover", //背景图片如何适应容器框
-          url:
-            "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3168074913,2072870605&fm=26&gp=0.jpg",
+          url:require('@/assets/images/meat1.jpg'),
           ishot: false,
           isdiscount: true,
           discount: 0.738,
           price: 22.88,
           total: 0,
+          target: "",
         },
         {
           key: 3,
           title: "小炒黄牛肉+米饭",
           fit: "cover", //背景图片如何适应容器框
-          url:
-            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp1.meituan.net%2Fdealwatera%2F85c3d05e643a57c849024af0dfb68b1d64683.jpg%40465h_702w_2e_90Q%257Cwatermark%3D1%26%26p%3D4&refer=http%3A%2F%2Fp1.meituan.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1620739597&t=969b4e4aa497d80e8c5c72e457ec3cd6",
+          url:require('@/assets/images/meat3.jpg'),
           ishot: true,
           isdiscount: true,
           discount: 0.665,
           price: 30,
           total: 0,
+          target: "welfare",
         },
         {
           key: 4,
           title: "小葱煎蛋+米饭",
           fit: "cover", //背景图片如何适应容器框
-          url:
-            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Frecipe0.hoto.cn%2Fpic%2Fstep%2Fl%2F8c%2Fd5%2F2020748.jpg&refer=http%3A%2F%2Frecipe0.hoto.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1620739731&t=8c4ccfbe964227b6e158bb1248a35e3f",
+          url:require('@/assets/images/egg.jpg'),
           ishot: false,
           isdiscount: false,
           discount: 1,
           price: 13.88,
           total: 0,
+          target: "hunan",
         },
         {
           key: 5,
           title: "黄焖鸡+米饭+时蔬",
           fit: "cover", //背景图片如何适应容器框
-          url:
-            "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp1.meituan.net%2Fdeal%2Ffa849387a64d9d5e93395c41be15d82d95644.jpg&refer=http%3A%2F%2Fp1.meituan.net&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1620739824&t=e36d06f333d227207e279f7812681f02",
+          url:require('@/assets/images/meat4.jpg'),
           ishot: true,
           isdiscount: true,
           discount: 0.666,
           price: 21.88,
           total: 0,
+          target: "vegtable",
         },
       ],
     };
@@ -198,11 +217,13 @@ export default {
       this.foodList[i].total += 1;
       this.total += this.discountPrice(i, discount);
       this.total = parseFloat(this.total.toFixed(2));
+
     },
     subfood(i, count, discount) {
       count--;
-      if (!count) {
+      if (count < 0) {
         this.foodList[i].show = !this.foodList[i].show;
+        return ;
       }
       this.foodList[i].total -= 1;
       this.total -= this.discountPrice(i, discount);
@@ -227,42 +248,57 @@ export default {
       return hotList;
     },
     goTarget() {
+      //获得锚点
       return function (cur) {
         let leftNode = this.$refs.leftInfo.$children;
         if (cur !== this.leftPre) {
-          $(leftNode[cur].$el).addClass('target');
-          $(leftNode[this.leftPre].$el).removeClass('target');
+          $(leftNode[cur].$el.children).addClass("target");
+          $(leftNode[this.leftPre].$el.children).removeClass("target");
           this.leftPre = cur;
         }
       };
     },
   },
   created() {
+    //获取菜肴信息
     //用户信息显示
     ({ ...this.status } = this.$store.getters.getUserInfo(
       this.$store.state.curUser
     ));
-    let time = new Date().getHours;
-    if (time <= 10) {
-      this.nowTime = "早上";
-    } else if (time <= 14) {
-      this.nowTime = "中午";
-    } else if (time <= 18) {
-      this.nowTime = "下午";
-    } else {
-      this.nowTime = "晚上";
+    let time = new Date().getHours();
+    switch(true){
+      case time < 4:
+        this.nowTime = '深夜了,早点休息';
+        break;
+      case time < 8:
+        this.nowTime = '早上好';
+        break;
+      case time < 12:
+        this.nowTime = '上午好';
+        break;
+      case time < 14:
+        this.nowTime = '中午好';
+        break;
+      case time < 18:
+        this.nowTime = '下午好';
+      case time < 24:
+        this.nowTime = '晚上好';
+        break;
     }
-
     //在这里从后端加载食物信息数据
   },
   mounted() {
     //事件锚点
-    $(this.$refs.leftInfo.$children[0].$el).addClass("target");
+    $(this.$refs.leftInfo.$children[0].$el.children[0]).addClass("target");
   },
 };
 </script>
 
 <style scoped>
+a {
+  text-decoration: none;
+  color: #000;
+}
 .home {
   font-size: 13px;
   letter-spacing: 1px;
@@ -319,7 +355,10 @@ export default {
 /* main */
 .main {
   height: 60% !important;
+  position: relative;
+  overflow: hidden;
 }
+
 .el-aside {
   background-color: #dcdfe6;
   width: 20% !important;
@@ -329,15 +368,22 @@ export default {
   align-items: center;
   height: 10%;
   text-align: left;
-  padding-left: 5%;
 }
-.el-main {
+.el-aside a{
+  text-align: center;
+  line-height: 1rem;
   height: 100%;
+  width:100%;
+}
+
+.el-main {
+  height: auto;
   padding: 0 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
+
 .list-box {
   height: 3rem;
   position: relative;
@@ -395,6 +441,6 @@ export default {
 
 .target {
   background-color: #fff;
-  color: #409eff;
+  color: #409eff !important;
 }
 </style>

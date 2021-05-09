@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import {
     ADD_USER,
     ADD_USER_ORDER_LIST,
-    change_LOGIN_STATUS,
+    CHANGE_LOGIN_STATUS,
 }from './mutations-types'
 
 Vue.use(Vuex)
@@ -11,7 +11,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     userInfo:{},
-    curUser:''
+    //当前用户
+    curUser:'',
   },
 
 
@@ -21,18 +22,24 @@ export default new Vuex.Store({
       obj.isLogin = false;
       obj.historyList = [];
       Vue.set(state.userInfo,obj.user,obj);
-      console.log(state.userInfo);
     },
     //给用户添加订单
     [ADD_USER_ORDER_LIST](state,obj){
-      state.userInfo.historyList.push(obj);
+      console.log(typeof state.userInfo);
+      state.userInfo[state.curUser].historyList.push(obj);
+      console.log('添加历史订单成功',state.userInfo);
     },
-    [change_LOGIN_STATUS](state,obj){
+    //改变用户登录状态
+    [CHANGE_LOGIN_STATUS](state,obj){
       state.userInfo[obj.user].isLogin = obj.isLogin;
       state.curUser = obj.user;
-    }
+    },
   },
-  getters:{
+
+
+
+  
+  getters: {
     //拿到用户账号，返回该账号信息
     getUserInfo:(state) => (username) =>{
       if(!state.userInfo){
